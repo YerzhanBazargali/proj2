@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        School Bell - Automated System
+    </title>
+    <style>
+		
+        h1 {
+            font-size: 270%;
+			margin:0;
+        }
+		.fulldate, .weekday, .curTime{
+			font-size: 180%;
+		
+		}
+        table, td, th {
+            border: solid;
+        }
+
+        td, th {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-size: 36px;
+            text-align: center;
+        }
+		
+		#sTime, #eTime{
+			width:200px;
+		}
+
+        div {
+            display:inline-block; 
+			margin:5px;
+        }
+		#update {
+			min-width: 300px;
+			min-height: 60px;
+			display: inline-flex;
+			font-family: 'Nunito', sans-serif;
+			font-size: 22px;
+			align-items: center;
+			justify-content: center;
+			text-transform: uppercase;
+			text-align: center;
+			letter-spacing: 1.3px;
+			font-weight: 700;
+			color: #313133;
+			background: #4FD1C5;
+			background: linear-gradient(90deg, rgba(129,230,217,1) 0%, rgba(79,209,197,1) 100%);
+			border: none;
+			border-radius: 1000px;
+			box-shadow: 12px 12px 24px rgba(79,209,197,.64);
+			transition: all 0.3s ease-in-out 0s;
+			cursor: pointer;
+			outline: none;
+			position: relative;
+			padding: 10px;
+	    }
+
+		#update::before {
+			content: '';
+			border-radius: 1000px;
+			min-width: calc(300px + 12px);
+			min-height: calc(60px + 12px);
+			border: 6px solid #00FFCB;
+			box-shadow: 0 0 60px rgba(0,255,203,.64);
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			opacity: 0;
+			transition: all .3s ease-in-out 0s;
+		}
+
+		#update:hover, 
+		#update:focus {
+			color: #313133;
+			transform: translateY(-6px);
+		}
+
+		#update:hover::before, 
+		#update:focus::before {
+			opacity: 1;
+		}
+
+	#update::after {
+	  content: '';
+	  width: 30px; height: 30px;
+	  border-radius: 100%;
+	  border: 6px solid #00FFCB;
+	  position: absolute;
+	  z-index: -1;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  animation: ring 1.5s infinite;
+	}
+
+	#update:hover::after, 
+	#update:focus::after {
+	  animation: none;
+	  display: none;
+	}
+
+	@keyframes ring {
+	  0% {
+		width: 30px;
+		height: 30px;
+		opacity: 1;
+	  }
+	  100% {
+		width: 300px;
+		height: 300px;
+		opacity: 0;
+	  }
+	}
+    </style>
+</head>
+
+<body>
+    <center>
+        <header>
+            <h1 class = name>School bell Automated System</h1>
+			<h1 class = fulldate>1 января 2024</h1>
+			<h1 class = weekday>День недели</h1>
+			<h1 class = curTime>00:00:00</h1><br>
+			<button id="update" onclick = "StartFunc()">ОБНОВИТЬ</button>
+			<audio id="bell" src="C:/Users/Acer/Desktop/ABR/melody/1.mp3" preload="auto" autoplay></audio>
+        </header>
+
+        <main>
+            <!-- Место для таблиц -->
+			<div>
+				<table id=firstShift>
+					<tbody class=fshift>
+						<tr>
+							<th colspan=3>I смена</th>
+						</tr>
+						<tr>
+							<th>№</th>
+							<th id=sTime>Начало</th>
+							<th id=eTime>Окончание</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div>
+				<table id=secondShift>
+					<tbody class=sShift>
+						<tr>
+							<th colspan=3>II смена</th>
+						</tr>
+						<tr>
+							<th>№</th>
+							<th>Начало</th>
+							<th>Окончание</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+        </main>
+
+        <footer>
+        </footer>
+    </center>
+
+    <script>
+        function StartFunc() {
+			var button = document.getElementById("update");
+			button.parentNode.removeChild(button);
+			//alert("Press OK to continuue...");
+            //let main = document.getElementsById('main')[0];
+            //let div = document.createElement('div');
+            //let div2 = document.createElement('div');
+            //div.setAttribute("style", "display:inline-block; margin:5px");
+            //div2.setAttribute("style", "display:inline-block;margin:5px");
+            let table = document.getElementById("firstShift");
+            let table2 = document.getElementById("secondShift");
+
+
+            // Расписание первой смены
+            let firstShift = [
+                //{num : "№", sTime : "Начало", eTime : "Окончание"},
+				{num : 1, sTime : "08:00", eTime : "08:40"},
+				{num : 2, sTime : "08:45", eTime : "09:25"},
+				{num : 3, sTime : "09:35", eTime : "10:15"},
+				{num : 4, sTime : "10:20", eTime : "11:00"},
+				{num : 5, sTime : "11:15", eTime : "11:55"},
+				{num : 6, sTime : "12:05", eTime : "12:45"},
+				{num : 7, sTime : "12:50", eTime : "13:30"},
+            ];
+
+            // Расписание второй смены
+            let secondShift = [
+                //{num : "№", sTime : "Начало", eTime : "Окончание"},
+				{num : 1, sTime : "14:00", eTime : "14:40"},
+				{num : 2, sTime : "14:45", eTime : "15:25"},
+				{num : 3, sTime : "15:40", eTime : "16:20"},
+				{num : 4, sTime : "16:30", eTime : "17:10"},
+				{num : 5, sTime : "17:20", eTime : "18:00"},
+				{num : 6, sTime : "18:05", eTime : "18:45"},
+				{num : 7, sTime : "18:50", eTime : "19:30"},
+				//{num : 8, sTime: "00:31", eTime: "01:37" },
+            ];
+
+            // Создание таблиц
+            createTable(firstShift, table);
+            createTable(secondShift, table2);
+
+            //div.appendChild(table);
+            //main.appendChild(div);
+            //div2.appendChild(table2);
+            //main.appendChild(div2);
+
+            // Запуск функции для проверки времени
+            setInterval(function(){
+                checkTime(firstShift); // Проверка для первой смены
+                checkTime(secondShift); // Проверка для второй смены
+            }, 1000); // Каждую минуту
+        }
+
+        // Функция для создания таблицы из данных
+        function createTable(shiftData, table) {
+			console.log(shiftData);
+            for (let i = 0; i < shiftData.length; i++) {
+                let row = table.insertRow();
+                for (const [key, value] of Object.entries(shiftData[i])) {
+                    let cell = row.insertCell();
+                    cell.textContent = value;
+					if(key==="sTime"){cell.setAttribute("id", "sTime");}
+					if(key==="eTime"){cell.setAttribute("id", "eTime");}
+                }
+            }
+        }
+
+        // Функция для запуска аудио с использованием URL
+        function playBell(time="start", id=1) {
+			console.log(time + " " + id);
+			//const bell = document.getElementById('bell');
+            const startBell = new Audio('C:/Users/Acer/Desktop/ABR/melody/Lstart.mp3');
+			
+			//bell.autoplay();
+			if(time==="start"){startBell.play();}
+            else if(time==="end"){
+				const endBell = new Audio('C:/Users/Acer/Desktop/ABR/melody/'+(id%5+1)+'.mp3');
+				endBell.play();
+			}
+        }
+		
+		function Format(hms){return (hms < 10 ? '0':'') + hms;}
+        // Функция для проверки текущего времени с расписанием
+        function checkTime(shift) {
+            const now = new Date();
+            const currentTime = Format(now.getHours()) + ':' + Format(now.getMinutes()) + ':' + Format(now.getSeconds());
+			console.log(currentTime);
+			
+			hcurTime = document.getElementsByClassName("curTime")[0];
+			hcurTime.textContent = currentTime;
+
+            // Проходим по всем временам смены
+            shift.forEach(lesson => {
+                if (lesson.sTime + ":00" === currentTime) {
+                    playBell(); // Воспроизвести звук если время совпадает
+					console.log("Playing");
+                }
+				else if(lesson.eTime  + ":00" === currentTime){
+                    playBell("end", lesson.num); // Воспроизвести звук если время совпадает
+					console.log("Playing");
+                }
+            });
+			
+			var curDate = {
+				//era: 'long',
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric',
+				//weekday: 'long',
+				//timezone: 'UTC',
+				//hour: 'numeric',
+				//minute: 'numeric',
+				//second: 'numeric'
+			}
+			var dayOfWeek = {
+				weekday: 'long',
+			}
+			fulldate = document.getElementsByClassName("fulldate")[0];
+			fulldate.textContent = now.toLocaleString("ru", curDate);
+			
+			weekday = document.getElementsByClassName("weekday")[0];
+			weekday.textContent = now.toLocaleString("ru", dayOfWeek).toUpperCase()	;
+        }
+    </script>
+</body>
+
+</html>
